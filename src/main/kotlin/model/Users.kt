@@ -7,6 +7,7 @@ object Users: IntIdTable("users") {
 	var email = varchar("email", 256).nullable()
 	var about = varchar("about", 512).nullable()
 	var avatarLink = text("avatarLink").nullable()
+	var passwordHash = text("passwordHash").nullable()
 }
 
 //@Serializable

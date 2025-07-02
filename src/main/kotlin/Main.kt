@@ -2,6 +2,7 @@ package org.example
 
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import org.example.routes.userRoutes
 
 fun main() {
 	embeddedServer(
@@ -9,6 +10,6 @@ fun main() {
 		port = 8080,
 		host = "localhost"
 	) {
-		configureRouting()
-	}.start(wait = true)
+		userRoutes()
+	}.start(true)
 }
