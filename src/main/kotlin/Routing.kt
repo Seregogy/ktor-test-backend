@@ -4,7 +4,6 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
@@ -12,8 +11,8 @@ import org.example.model.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureRouting() {
@@ -23,17 +22,17 @@ fun Application.configureRouting() {
 
 	val db = Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver")
 
-	transaction(db) {
+	val firstUserId = transaction(db) {
 		SchemaUtils.create(Users)
 
-		val firstId = Users.insert {
+		Users.insertAndGetId {
 			it[name] = "Volera"
 			it[about] = "Lorem ipsum"
 			it[email] = "volera@gmail.com"
-		} get Users.id
+		}
+	}.value
 
-		println(firstId)
-	}
+	println(Users.select { Users.id eq firstUserId }.first())
 
 	routing {
 		route("/user") {
