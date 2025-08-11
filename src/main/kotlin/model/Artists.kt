@@ -57,6 +57,10 @@ class ArtistEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 	val socialMedias by SocialMediaEntity referrersOn SocialMediasTable.artist
 	var albums by AlbumEntity via ArtistAlbumsTable
 	val imagesUrl by ArtistImageEntity referrersOn ImagesUrlTable.artist
+
+	override fun toString(): String {
+		return "$name ($id), likes = $likes, streaming = $listeningInMonth"
+	}
 }
 
 class SocialMediaEntity(id: EntityID<UUID>) : UUIDEntity(id) {
