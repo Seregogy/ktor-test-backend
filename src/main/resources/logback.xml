@@ -9,5 +9,5 @@
     <root level="trace">
         <appender-ref ref="FILE"/>
     </root>
-    <logger name="io.netty" level="ERROR"/>
+    <logger name="io.netty" level="ALL"/>
 </configuration>

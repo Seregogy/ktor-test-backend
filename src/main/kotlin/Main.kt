@@ -9,45 +9,38 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.autohead.AutoHeadResponse
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.partialcontent.PartialContent
 import io.ktor.server.response.*
 import kotlinx.serialization.json.Json
-import org.example.databaseAccessor.addArtistToDb
 import org.example.model.*
+import org.example.routes.albums.albumsRoutes
 import org.example.routes.auth.audience
 import org.example.routes.auth.authRoutes
 import org.example.routes.auth.issuer
 import org.example.routes.auth.secret
 import org.example.routes.servingFilesRoutes
-import org.example.routes.trackRoutes
+import org.example.routes.tracks.tracksRoutes
 import org.example.routes.userRoutes
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.awt.Color
-import java.nio.file.Path
-import java.util.*
 
 fun main() {
-	connectToDatabase()
-
-	addArtistToDb(Path.of("src/files/audio/Post Malone"))
-
-	/*embeddedServer(
+	embeddedServer(
 		factory = Netty,
 		port = 8080,
-		host = "localhost"
+		host = "192.168.1.64"
 	) {
 		configure()
-
-		println(transaction { TrackEntity.find { TracksTable.name eq "I Had Some Help" }.firstOrNull() }?.id ?: "track not found")
 
 		servingFilesRoutes()
 		authRoutes()
 		userRoutes()
-		trackRoutes()
-	}.start(true)*/
+		tracksRoutes()
+		albumsRoutes()
+	}.start(true)
 }
 
 fun Application.configure() {
@@ -58,6 +51,10 @@ fun Application.configure() {
 			}
 		)
 	}
+
+	install(AutoHeadResponse)
+
+	install(PartialContent) { }
 
 	install(Authentication) {
 		jwt("auth-jwt") {

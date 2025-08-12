@@ -21,7 +21,7 @@ data class Track(
 object TracksTable : UUIDTable("TRACKS_TABLE") {
 	val albumId = reference("albumId", AlbumsTable)
 	val name = text("name")
-	val durationSeconds  = integer("durationSeconds ")
+	val durationSeconds  = integer("durationSeconds ").default(0)
 	val lyrics = text("lyrics").nullable()
 	val indexInAlbum = integer("index_in_album").default(0)
 	val listening = integer("listening").default(0)
@@ -46,7 +46,6 @@ class TrackGenreEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 	companion object : UUIDEntityClass<TrackGenreEntity>(GenresTable)
 
 	var name by GenresTable.genreName
-
 	var tracks by TrackEntity via TracksToGenreTable
 }
 
@@ -65,3 +64,4 @@ class TrackEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 
 	var genres by TrackGenreEntity via TracksToGenreTable
 }
+

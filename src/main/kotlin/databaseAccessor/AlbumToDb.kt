@@ -5,33 +5,29 @@ import org.example.model.ArtistEntity
 import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.nio.file.Path
-import kotlin.io.path.exists
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
 fun addAlbumToDb(
-	artistEntity: ArtistEntity,
+	artist: ArtistEntity,
 	albumPath: Path
 ): AlbumEntity {
 	val albumName = albumPath.last().name
-	println(albumName)
+	println("\t$albumName")
 
 	val album = transaction {
 		AlbumEntity.new {
 			name = albumName
-			artists = SizedCollection(artistEntity)
+			artists = SizedCollection(artist)
 		}
 	}
 
-	println(album)
-
-	println("\t$albumPath, ${albumPath.exists()}")
-	albumPath.listDirectoryEntries().forEach {
-		println(it)
-
+	albumPath.listDirectoryEntries().forEachIndexed { i, it ->
 		addTrackToDb(
 			album,
-			it
+			artist,
+			it,
+			i
 		)
 	}
 
