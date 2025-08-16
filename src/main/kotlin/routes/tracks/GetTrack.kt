@@ -6,6 +6,8 @@ import io.ktor.server.plugins.origin
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
+import org.example.dto.BaseAlbum
+import org.example.dto.BaseArtist
 import org.example.dto.FullTrack
 import org.example.dto.toBaseDTO
 import org.example.dto.toFullDTO
@@ -41,15 +43,7 @@ fun Route.getTrack() {
 		transaction { track.listening += 1 }
 
 		val album = transaction { track.album.toBaseDTO() }
-		val artist = transaction { track.artists.toList() }.map { it.To
-			it.run {
-				BaseArtist(
-					id.value.toString(),
-					name = name,
-					imageUrl = transaction { imagesUrl.firstOrNull()?.imageUrl }
-				)
-			}
-		}
+		val artist = transaction { track.artists.toList() }.map { it.toBaseDTO() }
 
 		call.respond(
 			TrackResponse(
