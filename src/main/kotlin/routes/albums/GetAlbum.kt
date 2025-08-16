@@ -7,6 +7,9 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import kotlinx.serialization.Serializable
 import org.example.model.AlbumEntity
+import org.example.model.ArtistEntity
+import org.example.model.ArtistsTable
+import org.jetbrains.exposed.dao.load
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
@@ -14,7 +17,7 @@ import java.util.UUID
 private data class Artist(
 	val id: String,
 	val name: String,
-	val imageUrl: String
+	val imageUrl: String?
 )
 
 @Serializable
@@ -64,13 +67,12 @@ fun Route.getAlbumById() {
 			}
 		}
 
-
 		val artists = transaction { album.artists.toList() }.map {
-			it.let {
+			it.let { it ->
 				Artist(
 					id = it.id.value.toString(),
 					name = it.name,
-					imageUrl = it.imagesUrl.first().imageUrl
+					imageUrl = transaction { it.imagesUrl.firstOrNull()?.imageUrl ?: "" }
 				)
 			}
 		}
@@ -87,7 +89,5 @@ fun Route.getAlbumById() {
 				artists = artists
 			)
 		)
-
-		TODO("implement on client")
 	}
 }

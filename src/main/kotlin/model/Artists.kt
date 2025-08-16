@@ -32,7 +32,7 @@ object ArtistsTable : UUIDTable("ARTISTS") {
 object ImagesUrlTable : UUIDTable("IMAGES_URLS_TABLE") {
 	val artist = reference("artist", ArtistsTable)
 	val imageUrl = text("imageUrl")
-	val primaryColor = integer("primaryColor")
+	val primaryColor = integer("primaryColor").default(0)
 }
 
 object SocialMediasTable : UUIDTable("SOCIAL_MEDIAS_TABLE") {
