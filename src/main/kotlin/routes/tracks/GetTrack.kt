@@ -5,10 +5,20 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.origin
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.Serializable
+import org.example.dto.FullTrack
+import org.example.dto.toBaseDTO
+import org.example.dto.toFullDTO
 import org.example.model.TrackEntity
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
+@Serializable
+data class TrackResponse(
+	val track: FullTrack = FullTrack(),
+	val album: BaseAlbum = BaseAlbum(),
+	val artists: List<BaseArtist> = listOf()
+)
 
 fun Route.getTrack() {
 	get("{id}") {
@@ -30,10 +40,10 @@ fun Route.getTrack() {
 
 		transaction { track.listening += 1 }
 
-		val album = transaction { track.album }
-		val artist = transaction { track.artists.toList() }.map {
+		val album = transaction { track.album.toBaseDTO() }
+		val artist = transaction { track.artists.toList() }.map { it.To
 			it.run {
-				Artist(
+				BaseArtist(
 					id.value.toString(),
 					name = name,
 					imageUrl = transaction { imagesUrl.firstOrNull()?.imageUrl }
@@ -43,25 +53,12 @@ fun Route.getTrack() {
 
 		call.respond(
 			TrackResponse(
-				track = Track(
-					id = track.id.value.toString(),
-					name = track.name,
-					durationSeconds = track.durationSeconds,
-					lyrics = track.lyrics,
-					indexInAlbum = track.indexInAlbum,
-					listening = track.listening,
-					isExplicit = track.isExplicit,
-					audioUrl = call.request.origin.let {
+				track = track.toFullDTO(
+					call.request.origin.let {
 						"${it.scheme}://${it.serverHost}:${it.serverPort}/audio/${track.id}.mp3"
 					}
 				),
-				album = Album(
-					id = album.id.value.toString(),
-					name = album.name,
-					imageUrl = album.imageUrl ?: "",
-
-
-					),
+				album = album,
 				artists = artist
 			)
 		)
