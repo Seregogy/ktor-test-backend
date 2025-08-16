@@ -12,8 +12,6 @@ import org.jetbrains.exposed.sql.Random
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
-
-
 fun Route.getRandomTrack() {
 	get("random") {
 		val track = transaction {

@@ -100,5 +100,5 @@ fun validateRequest(registerRequest: RegisterRequest): Map<String, String>? {
 	}
 }
 
-//TODO: сделать нормальную валидацию пароля
+//TODO: сделать нормальную валидацию емаеила
 fun validateEmail(email: String): Boolean = email.length in 5..256

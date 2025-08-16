@@ -16,6 +16,7 @@ import io.ktor.server.response.*
 import kotlinx.serialization.json.Json
 import org.example.model.*
 import org.example.routes.albums.albumsRoutes
+import org.example.routes.artists.artistsRoutes
 import org.example.routes.auth.audience
 import org.example.routes.auth.authRoutes
 import org.example.routes.auth.issuer
@@ -42,6 +43,7 @@ fun main() {
 		userRoutes()
 		tracksRoutes()
 		albumsRoutes()
+		artistsRoutes()
 	}.start(true)
 }
 

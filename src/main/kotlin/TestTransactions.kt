@@ -3,10 +3,6 @@ package org.example
 import org.example.model.AlbumEntity
 import org.example.model.ArtistEntity
 import org.example.model.ArtistsTable
-import org.example.model.DirectorEntity
-import org.example.model.DirectorsTable
-import org.example.model.FilmEntity
-import org.example.model.FilmsTable
 import org.example.model.TrackEntity
 import org.example.model.TrackGenreEntity
 import org.jetbrains.exposed.sql.SizedCollection
@@ -47,22 +43,6 @@ fun searchArtist(artistName: String) {
 		artist.imagesUrl.forEach { image ->
 			println("\tUrl: ${image.imageUrl}")
 			println("\tЦвет: ${Color(image.primaryColor).rgb}")
-		}
-	}
-}
-
-fun searchFilm(filmName: String) {
-	FilmEntity.find {
-		FilmsTable.name eq filmName
-	}.firstOrNull()?.let { film ->
-		println("Фильм: ${film.name}")
-		println("Режиссёр: ${film.director.name}")
-
-		println("Другие фильмы от ${film.director.name}:")
-		DirectorEntity.find {
-			DirectorsTable.id eq film.director.id
-		}.firstOrNull()?.films?.forEach { directorsFilm ->
-			println("\t${directorsFilm.name}")
 		}
 	}
 }
