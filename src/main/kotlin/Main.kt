@@ -12,7 +12,9 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.autohead.AutoHeadResponse
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.partialcontent.PartialContent
+import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.response.*
+import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 import org.example.model.*
 import org.example.routes.albums.albumsRoutes
@@ -98,6 +100,10 @@ fun Application.configure() {
 			ImagesUrlTable, ArtistAlbumsTable, ArtistsOnTrackTable, SocialMediasTable, TracksToGenreTable,
 			UsersFavoriteTracksTable
 		)
+	}
+
+	routing {
+		swaggerUI(path = "docs", swaggerFile = "src/openapi/documentation.yaml")
 	}
 }
 

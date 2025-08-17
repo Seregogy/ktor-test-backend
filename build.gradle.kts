@@ -19,6 +19,7 @@ dependencies {
 
 	implementation("io.ktor:ktor-server-core:${ktorVersion}")
 	implementation("io.ktor:ktor-server-netty:${ktorVersion}")
+	implementation("io.ktor:ktor-server-swagger:${ktorVersion}")
 
 	implementation("io.ktor:ktor-server-auth:${ktorVersion}")
 	implementation("io.ktor:ktor-server-auth-jwt:${ktorVersion}")
