@@ -51,8 +51,6 @@ fun Route.toggleLike() {
 				)
 			)
 
-			println(userId)
-
 			val user = transaction {
 				UserEntity.findById(UUID.fromString(userId))
 			} ?: return@post call.respond(

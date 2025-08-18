@@ -1,43 +1,13 @@
 package org.example.routes.albums
 
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.call
-import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
-import kotlinx.serialization.Serializable
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import org.example.dto.toFullDTO
 import org.example.model.AlbumEntity
-import org.example.model.ArtistEntity
-import org.example.model.ArtistsTable
-import org.jetbrains.exposed.dao.load
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.UUID
-
-@Serializable
-private data class Artist(
-	val id: String,
-	val name: String,
-	val imageUrl: String?
-)
-
-@Serializable
-private data class Track(
-	val id: String,
-	val name: String,
-	val isExplicit: Boolean
-)
-
-@Serializable
-private data class Album(
-	val name: String,
-	val likes: Int,
-	val listening: Int,
-	val releaseDate: Long,
-	val imageUrl: String?,
-	val label: String?,
-	val tracks: List<Track>,
-	val artists: List<Artist>
-)
+import java.util.*
 
 fun Route.getAlbumById() {
 	get("{id}") {
@@ -57,37 +27,6 @@ fun Route.getAlbumById() {
 			)
 		)
 
-		val tracks = transaction { album.tracks.toList() }.map {
-			it.let {
-				Track(
-					id = it.id.value.toString(),
-					name = it.name,
-					isExplicit = it.isExplicit
-				)
-			}
-		}
-
-		val artists = transaction { album.artists.toList() }.map {
-			it.let { it ->
-				Artist(
-					id = it.id.value.toString(),
-					name = it.name,
-					imageUrl = transaction { it.imagesUrl.firstOrNull()?.imageUrl ?: "" }
-				)
-			}
-		}
-
-		call.respond(
-			Album(
-				name = album.name,
-				likes = album.likes,
-				listening = album.listening,
-				releaseDate = album.releaseDate,
-				imageUrl = album.imageUrl,
-				label = album.label,
-				tracks = tracks,
-				artists = artists
-			)
-		)
+		call.respond(album.toFullDTO())
 	}
 }

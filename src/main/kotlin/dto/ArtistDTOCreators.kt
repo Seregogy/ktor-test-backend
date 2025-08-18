@@ -21,7 +21,7 @@ data class BaseArtist(
 data class FullArtist(
 	val id: String = "",
 	val name: String = "unknown artist",
-	val imageUrl: String? = "",
+	val imagesUrl: List<String> = listOf(),
 	val about: String? = "",
 	val listeningInMonth: Int = 0,
 	val likes: Int = 0,
@@ -44,7 +44,7 @@ fun ArtistEntity.toFullDTO() : FullArtist {
 	return FullArtist(
 		id = id.value.toString(),
 		name = name,
-		imageUrl = transaction { images.firstOrNull()?.imageUrl ?: "" },
+		imagesUrl = transaction { images.map { it.imageUrl } },
 		about = about,
 		listeningInMonth = listeningInMonth,
 		likes = likes,

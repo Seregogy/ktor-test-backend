@@ -2,6 +2,7 @@ package org.example.dto
 
 import kotlinx.serialization.Serializable
 import org.example.model.AlbumEntity
+import org.jetbrains.exposed.sql.transactions.transaction
 
 @Serializable
 data class BaseAlbum(
@@ -18,6 +19,27 @@ fun AlbumEntity.toBaseDTO(): BaseAlbum {
 	)
 }
 
-fun AlbumEntity.toFullDTO() {
-	TODO()
+@Serializable
+data class FullAlbum(
+	val name: String,
+	val likes: Int,
+	val listening: Int,
+	val releaseDate: Long,
+	val imageUrl: String?,
+	val label: String?,
+	val tracks: List<BaseTrack>,
+	val artists: List<BaseArtist>
+)
+
+fun AlbumEntity.toFullDTO() : FullAlbum {
+	return FullAlbum(
+		name = name,
+		likes = likes,
+		listening = transaction { tracks.sumOf { it.listening } },
+		releaseDate = releaseDate,
+		imageUrl = imageUrl,
+		label = label,
+		tracks = transaction { tracks.map { it.toBaseDTO() } },
+		artists = transaction { artists.map { it.toBaseDTO() } }
+	)
 }

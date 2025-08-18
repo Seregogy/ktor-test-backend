@@ -7,6 +7,7 @@ fun Application.tracksRoutes() {
 	routing {
 		route("/api/v1/tracks") {
 			getRandomTrack()
+			getRandomTrackId()
 			getTrack()
 			toggleLike()
 		}

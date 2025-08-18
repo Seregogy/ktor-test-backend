@@ -15,13 +15,6 @@ import org.example.model.TrackEntity
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
-@Serializable
-data class TrackResponse(
-	val track: FullTrack = FullTrack(),
-	val album: BaseAlbum = BaseAlbum(),
-	val artists: List<BaseArtist> = listOf()
-)
-
 fun Route.getTrack() {
 	get("{id}") {
 		val trackId = call.parameters["id"] ?: return@get call.respond(
@@ -42,19 +35,10 @@ fun Route.getTrack() {
 
 		transaction { track.listening += 1 }
 
-		val album = transaction { track.album.toBaseDTO() }
-		val artist = transaction { track.artists.toList() }.map { it.toBaseDTO() }
-
 		call.respond(
-			TrackResponse(
-				track = track.toFullDTO(
-					call.request.origin.let {
-						"${it.scheme}://${it.serverHost}:${it.serverPort}/audio/${track.id}.mp3"
-					}
-				),
-				album = album,
-				artists = artist
-			)
+			track.toFullDTO(call.request.origin.let {
+				"${it.scheme}://${it.serverHost}:${it.serverPort}/audio/${track.id}.mp3"
+			})
 		)
 	}
 }
