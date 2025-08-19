@@ -6,20 +6,22 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.example.dto.toFullDTO
 import org.example.model.AlbumEntity
+import org.example.tools.tryParseUUIDFromString
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
 
 fun Route.getAlbumById() {
 	get("{id}") {
-		val albumId = call.parameters["id"] ?: return@get call.respond(
+		val albumId = call.parameters["id"]?.let {
+			tryParseUUIDFromString(it)
+		} ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "not specified"
+				"id" to "not stated i"
 			)
 		)
 
 		val album = transaction {
-			AlbumEntity.findById(UUID.fromString(albumId))
+			AlbumEntity.findById(albumId)
 		} ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(

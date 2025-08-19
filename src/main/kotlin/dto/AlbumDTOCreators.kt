@@ -9,13 +9,15 @@ data class BaseAlbum(
 	val id: String = "",
 	val name: String = "",
 	val imageUrl: String = "",
+	val artists: List<BaseArtist> = listOf()
 )
 
 fun AlbumEntity.toBaseDTO(): BaseAlbum {
 	return BaseAlbum(
 		id = id.value.toString(),
 		name = name,
-		imageUrl = imageUrl ?: ""
+		imageUrl = imageUrl ?: "",
+		artists = transaction { artists.map { it.toBaseDTO() } }
 	)
 }
 

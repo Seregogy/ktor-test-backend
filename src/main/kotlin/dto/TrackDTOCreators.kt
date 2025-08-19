@@ -32,8 +32,7 @@ class FullTrack(
 	val listening: Int? = 0,
 	val isExplicit: Boolean? = false,
 	val audioUrl: String = "",
-	val album: BaseAlbum = BaseAlbum(),
-	val artists: List<BaseArtist> = listOf()
+	val album: BaseAlbum = BaseAlbum()
 )
 
 fun TrackEntity.toFullDTO(audioUrl: String) : FullTrack {
@@ -47,7 +46,6 @@ fun TrackEntity.toFullDTO(audioUrl: String) : FullTrack {
 		listening = listening,
 		isExplicit = isExplicit,
 		audioUrl = audioUrl,
-		album = transaction { album.toBaseDTO() },
-		artists = transaction { artists.map { it.toBaseDTO() } }
+		album = transaction { album.toBaseDTO() }
 	)
 }

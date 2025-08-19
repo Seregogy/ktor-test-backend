@@ -12,20 +12,24 @@ import org.example.dto.FullTrack
 import org.example.dto.toBaseDTO
 import org.example.dto.toFullDTO
 import org.example.model.TrackEntity
+import org.example.tools.tryParseUUIDFromString
+import org.jetbrains.exposed.sql.Except
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 fun Route.getTrack() {
 	get("{id}") {
-		val trackId = call.parameters["id"] ?: return@get call.respond(
+		val trackId = call.parameters["id"]?.let {
+			tryParseUUIDFromString(it)
+		}?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "not stated"
+				"id" to "not stated or invalid"
 			)
 		)
 
 		val track = transaction {
-			TrackEntity.findById(UUID.fromString(trackId))
+			TrackEntity.findById(trackId)
 		} ?: return@get call.respond(
 			status = HttpStatusCode.NotFound,
 			message = mapOf(
