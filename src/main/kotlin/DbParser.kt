@@ -1,38 +1,28 @@
 package org.example
 
-import org.example.databaseAccessor.addTrackToDb
-import org.example.model.AlbumEntity
-import org.example.model.AlbumsTable
 import org.example.model.ArtistEntity
+import org.example.model.ArtistImageEntity
 import org.example.model.ArtistsTable
+import org.example.model.TrackEntity
+import org.example.model.TracksTable
 import org.jetbrains.exposed.sql.transactions.transaction
-import kotlin.io.path.Path
-import kotlin.io.path.listDirectoryEntries
 
 fun main() {
 	connectToDatabase()
-
-	val artist = transaction {
+	/*transaction {
 		ArtistEntity.find {
-			ArtistsTable.name eq "Post Malone"
-		}.first()
-	}
+			ArtistsTable.name eq "Markul"
+		}.firstOrNull()?.let { artistEntity ->
+			ArtistImageEntity.new {
+				artist = artistEntity
+				imageUrl = "https://img08.rl0.ru/afisha/e1200x1200i/daily.afisha.ru/uploads/images/1/c6/1c662dc779cd12974a28eadce7a01dd0.jpg"
+			}
 
-	val album = transaction {
-		AlbumEntity.find {
-			AlbumsTable.name eq "beerbongs & bentleys"
-		}.first()
-	}
-
-	println(artist.name)
-	println(album.name)
-
-	Path("src/files/Twelve Carat Toothache/").listDirectoryEntries().forEachIndexed { index, path ->
-		addTrackToDb(
-			artist = artist,
-			album = album,
-			trackPath = path,
-			index = index + 5
-		)
-	}
+			ArtistImageEntity.new {
+				artist = artistEntity
+				imageUrl = "https://www.soyuz.ru/public/uploads/files/2/7647312/2025080414071643aa684bad.jpg"
+			}
+		}
+	}*/
+	//addArtistToDb(Path("src/files/Markul"))
 }

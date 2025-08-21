@@ -8,7 +8,7 @@ import java.io.File
 
 fun Application.servingFilesRoutes() {
 	routing {
-		staticFiles("/image", File("src/files/images"))
+		staticFiles("/images", File("src/files/images"))
 
 		staticFiles("/audio", dir = File("src/files/audio")) {
 			contentType {

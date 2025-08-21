@@ -36,7 +36,7 @@ fun main() {
 	embeddedServer(
 		factory = Netty,
 		port = 8080,
-		host = "192.168.1.64"
+		host = "0.0.0.0"
 	) {
 		configure()
 
