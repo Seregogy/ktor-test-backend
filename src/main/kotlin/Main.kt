@@ -3,6 +3,7 @@ package org.example
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.http.*
+import io.ktor.http.content.CachingOptions
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -10,6 +11,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.autohead.*
+import io.ktor.server.plugins.cachingheaders.caching
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.partialcontent.*
 import io.ktor.server.response.*
@@ -25,6 +27,7 @@ import org.example.routes.auth.secret
 import org.example.routes.servingFilesRoutes
 import org.example.routes.tracks.tracksRoutes
 import org.example.routes.userRoutes
+import org.example.tools.cacheControl
 import org.example.tools.hours
 import org.example.tools.minutes
 import org.jetbrains.exposed.sql.Database
@@ -47,6 +50,13 @@ fun main() {
 		tracksRoutes()
 		albumsRoutes()
 		artistsRoutes()
+
+		routing {
+			get("test") {
+				call.cacheControl(900)
+				call.respondText("this text cached on 900sec")
+			}
+		}
 	}.start(true)
 }
 

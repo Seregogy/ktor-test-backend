@@ -5,6 +5,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.CachingOptions
 import io.ktor.server.application.call
 import io.ktor.server.plugins.cachingheaders.CachingHeaders
+import io.ktor.server.plugins.cachingheaders.caching
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
@@ -15,6 +16,7 @@ import org.example.dto.FullArtist
 import org.example.dto.toBaseDTO
 import org.example.dto.toFullDTO
 import org.example.model.ArtistEntity
+import org.example.tools.cacheControl
 import org.example.tools.hours
 import org.example.tools.minutes
 import org.example.tools.tryParseUUIDFromString
@@ -30,10 +32,6 @@ data class GetArtistResponse(
 
 fun Route.getArtist() {
 	get("{id}") {
-		install(CachingHeaders) {
-			options { CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 1.hours())) }
-		}
-
 		val artistId = call.parameters["id"]?.let {
 			tryParseUUIDFromString(it)
 		} ?: return@get call.respond(
@@ -54,6 +52,7 @@ fun Route.getArtist() {
 			)
 		)
 
+		call.cacheControl(30.minutes())
 		call.respond(
 			message = GetArtistResponse(
 				artist = artist.toFullDTO(),

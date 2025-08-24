@@ -3,6 +3,7 @@ package org.example.routes.tracks
 import io.ktor.http.*
 import io.ktor.http.content.CachingOptions
 import io.ktor.server.plugins.cachingheaders.CachingHeaders
+import io.ktor.server.plugins.cachingheaders.caching
 import io.ktor.server.plugins.origin
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -10,16 +11,15 @@ import org.example.dto.toFullDTO
 import org.example.model.TrackEntity
 import org.example.routes.auth.externalPort
 import org.example.routes.auth.externalHost
+import org.example.tools.cacheControl
+import org.example.tools.hours
 import org.example.tools.minutes
 import org.example.tools.tryParseUUIDFromString
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.time.Duration.Companion.minutes
 
 fun Route.getTrack() {
 	get("{id}") {
-		install(CachingHeaders) {
-			options { CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 10.minutes())) }
-		}
-
 		val trackId = call.parameters["id"]?.let {
 			tryParseUUIDFromString(it)
 		}?: return@get call.respond(
@@ -40,6 +40,7 @@ fun Route.getTrack() {
 
 		transaction { track.listening += 1 }
 
+		call.cacheControl(10.minutes())
 		call.respond(
 			track.toFullDTO(call.request.origin.let {
 				"${it.scheme}://${externalHost}:${externalPort}/audio/${track.id}.mp3"

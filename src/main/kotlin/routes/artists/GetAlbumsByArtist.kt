@@ -5,6 +5,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.CachingOptions
 import io.ktor.server.application.call
 import io.ktor.server.plugins.cachingheaders.CachingHeaders
+import io.ktor.server.plugins.cachingheaders.caching
+import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
@@ -13,7 +15,9 @@ import kotlinx.serialization.Serializable
 import org.example.dto.BaseAlbum
 import org.example.dto.toBaseDTO
 import org.example.model.ArtistEntity
+import org.example.tools.cacheControl
 import org.example.tools.hours
+import org.example.tools.minutes
 import org.example.tools.tryParseUUIDFromString
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -24,9 +28,7 @@ data class GetAlbumsByArtistResponse(
 
 fun Route.getAlbumsFromArtist() {
 	get("{id}/albums") {
-		install(CachingHeaders) {
-			options { CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 1.hours())) }
-		}
+		call.caching = CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 900))
 
 		val artistId = call.parameters["id"]?.let {
 			tryParseUUIDFromString(it)
@@ -46,6 +48,7 @@ fun Route.getAlbumsFromArtist() {
 			)
 		)
 
+		call.cacheControl(30.minutes())
 		call.respond(GetAlbumsByArtistResponse(
 			albums = transaction { artist.albums.map { it.toBaseDTO() } }
 		))
