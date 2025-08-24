@@ -1,24 +1,25 @@
 package org.example.routes.tracks
 
 import io.ktor.http.*
-import io.ktor.server.application.*
+import io.ktor.http.content.CachingOptions
+import io.ktor.server.plugins.cachingheaders.CachingHeaders
 import io.ktor.server.plugins.origin
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.Serializable
-import org.example.dto.BaseAlbum
-import org.example.dto.BaseArtist
-import org.example.dto.FullTrack
-import org.example.dto.toBaseDTO
 import org.example.dto.toFullDTO
 import org.example.model.TrackEntity
+import org.example.routes.auth.externalPort
+import org.example.routes.auth.externalHost
+import org.example.tools.minutes
 import org.example.tools.tryParseUUIDFromString
-import org.jetbrains.exposed.sql.Except
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
 
 fun Route.getTrack() {
 	get("{id}") {
+		install(CachingHeaders) {
+			options { CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 10.minutes())) }
+		}
+
 		val trackId = call.parameters["id"]?.let {
 			tryParseUUIDFromString(it)
 		}?: return@get call.respond(
@@ -41,7 +42,7 @@ fun Route.getTrack() {
 
 		call.respond(
 			track.toFullDTO(call.request.origin.let {
-				"${it.scheme}://${it.serverHost}:${it.serverPort}/audio/${track.id}.mp3"
+				"${it.scheme}://${externalHost}:${externalPort}/audio/${track.id}.mp3"
 			})
 		)
 	}

@@ -1,6 +1,8 @@
 plugins {
 	kotlin("jvm") version "2.1.21"
 	kotlin("plugin.serialization") version "2.1.21"
+
+	id("io.ktor.plugin") version "3.2.3"
 }
 
 group = "org.example"
@@ -8,6 +10,10 @@ version = "1.0-SNAPSHOT"
 
 repositories {
 	mavenCentral()
+}
+
+application {
+	mainClass = "org.example.MainKt" // Set your fully qualified main class name here
 }
 
 val ktorVersion = "2.3.7"
@@ -20,6 +26,8 @@ dependencies {
 	implementation("io.ktor:ktor-server-core:${ktorVersion}")
 	implementation("io.ktor:ktor-server-netty:${ktorVersion}")
 	implementation("io.ktor:ktor-server-swagger:${ktorVersion}")
+
+	implementation("io.ktor:ktor-server-caching-headers:${ktorVersion}")
 
 	implementation("io.ktor:ktor-server-auth:${ktorVersion}")
 	implementation("io.ktor:ktor-server-auth-jwt:${ktorVersion}")

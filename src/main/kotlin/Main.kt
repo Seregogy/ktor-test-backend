@@ -9,12 +9,11 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.autohead.AutoHeadResponse
+import io.ktor.server.plugins.autohead.*
 import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.partialcontent.PartialContent
-import io.ktor.server.plugins.swagger.swaggerUI
+import io.ktor.server.plugins.partialcontent.*
 import io.ktor.server.response.*
-import io.ktor.server.routing.routing
+import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.example.model.*
 import org.example.routes.albums.albumsRoutes
@@ -26,13 +25,15 @@ import org.example.routes.auth.secret
 import org.example.routes.servingFilesRoutes
 import org.example.routes.tracks.tracksRoutes
 import org.example.routes.userRoutes
-import org.jetbrains.exposed.dao.load
+import org.example.tools.hours
+import org.example.tools.minutes
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun main() {
+	prepareToServerLaunch()
+
 	embeddedServer(
 		factory = Netty,
 		port = 8080,
@@ -102,11 +103,15 @@ fun Application.configure() {
 		)
 	}
 
-	routing {
-		swaggerUI(path = "docs", swaggerFile = "src/openapi/documentation.yaml")
-	}
+	routing { /*swaggerUI(path = "docs", swaggerFile = "src/m/openapi/documentation.yaml")*/ }
 }
 
-fun connectToDatabase() {
-	Database.connect("jdbc:sqlite:src/database/database.db", "org.sqlite.JDBC")
+private fun connectToDatabase() {
+	val dbPath = "src/files/database.db"
+	Database.connect("jdbc:sqlite:$dbPath", "org.sqlite.JDBC")
+}
+
+private fun prepareToServerLaunch() {
+	System.setProperty("io.netty.transport.noNative", "true")
+	System.setProperty("io.netty.noPreferDirect", "true")
 }

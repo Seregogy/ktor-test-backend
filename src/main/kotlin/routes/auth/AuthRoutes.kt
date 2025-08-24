@@ -5,6 +5,9 @@ import com.auth0.jwt.JWTCreator
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
+val externalHost: String? = System.getenv("host")
+val externalPort: String? = System.getenv("externalPort")
+val localHost: String? = System.getenv("localHost")
 val secret: String? = System.getenv("secret")
 val issuer: String? = System.getenv("issuer")
 val audience: String? = System.getenv("audience")
