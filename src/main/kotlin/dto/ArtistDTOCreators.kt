@@ -14,6 +14,7 @@ data class SocialMedia(
 data class BaseArtist(
 	val id: String = "",
 	val name: String = "unknown artist",
+	val about: String? = "unknown artist",
 	val imageUrl: String? = ""
 )
 
@@ -34,6 +35,7 @@ fun ArtistEntity.toBaseDTO(): BaseArtist {
 	return BaseArtist(
 		id = id.value.toString(),
 		name = name,
+		about = about,
 		imageUrl = transaction { imagesUrl.firstOrNull()?.imageUrl } ?: ""
 	)
 }

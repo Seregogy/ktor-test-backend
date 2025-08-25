@@ -32,6 +32,7 @@ import org.example.tools.hours
 import org.example.tools.minutes
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun main() {
@@ -50,13 +51,6 @@ fun main() {
 		tracksRoutes()
 		albumsRoutes()
 		artistsRoutes()
-
-		routing {
-			get("test") {
-				call.cacheControl(900)
-				call.respondText("this text cached on 900sec")
-			}
-		}
 	}.start(true)
 }
 
