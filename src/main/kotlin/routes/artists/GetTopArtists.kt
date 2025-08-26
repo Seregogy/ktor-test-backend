@@ -21,7 +21,7 @@ data class GetTopArtistsResponse(
 //TODO: оптимизировать подсчёт прослушиваний
 fun Route.getTopArtists() {
 	get("top") {
-		val limit = call.parameters["limit"]?.toInt() ?: defaulLimit
+		val limit = call.queryParameters["limit"]?.toInt() ?: defaulLimit
 
 		val artists = transaction {
 			ArtistEntity.all().sortedBy { artist ->
