@@ -1,11 +1,7 @@
 package org.example.routes.tracks
 
-import io.ktor.server.application.call
-import io.ktor.server.plugins.origin
-import io.ktor.server.response.respond
-import io.ktor.server.response.respondRedirect
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.Serializable
 import org.example.model.TrackEntity
 import org.example.model.TracksTable
 import org.jetbrains.exposed.sql.Random

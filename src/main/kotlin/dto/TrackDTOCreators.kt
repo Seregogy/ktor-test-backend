@@ -22,6 +22,25 @@ fun TrackEntity.toBaseDTO() : BaseTrack {
 }
 
 @Serializable
+open class BaseTrackWithArtists(
+	val id: String = "",
+	val name: String = "",
+	val imageUrl: String? = "",
+	val indexInAlbum: Int = 0,
+	val artists: List<BaseArtist> = listOf()
+)
+
+fun TrackEntity.toBaseDTOWithArtists() : BaseTrackWithArtists {
+	return BaseTrackWithArtists(
+		id = id.value.toString(),
+		name = name,
+		imageUrl = transaction { album.imageUrl },
+		indexInAlbum = indexInAlbum,
+		artists = artists.map { it.toBaseDTO() }
+	)
+}
+
+@Serializable
 class FullTrack(
 	val id: String = "",
 	val name: String = "",

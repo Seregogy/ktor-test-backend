@@ -10,6 +10,7 @@ fun Application.tracksRoutes() {
 			getRandomTrackId()
 			getTrack()
 			toggleLike()
+			getAlbumByTrack()
 		}
 	}
 }

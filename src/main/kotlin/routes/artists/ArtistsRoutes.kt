@@ -8,9 +8,14 @@ fun Application.artistsRoutes() {
 	routing {
 		route("api/v1/artists") {
 			getArtist()
-			getArtistTopTracks()
 			getTopArtists()
-			getAlbumsFromArtist()
+
+			getTopTracksByArtist()
+			getSinglesByArtist()
+			getAlbumsByArtist()
+			getReleasesByArtist()
+
+			getLastReleaseByArtist()
 		}
 	}
 }

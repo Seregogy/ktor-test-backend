@@ -8,6 +8,7 @@ fun Application.albumsRoutes() {
 	routing {
 		route("/api/v1/albums") {
 			getAlbumById()
+			shareAlbumRedirect()
 		}
 	}
 }

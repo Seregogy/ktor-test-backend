@@ -16,7 +16,7 @@ fun addTrackToDb(
 	trackPath: Path,
 	index: Int
 ) : TrackEntity? {
-	val trackName = trackPath.last().name.drop(3).split(".").dropLast(1).joinToString("")
+	val trackName = trackPath.last().name.split(".").dropLast(1).joinToString("")
 
 	val track = transaction {
 		TrackEntity.new {
