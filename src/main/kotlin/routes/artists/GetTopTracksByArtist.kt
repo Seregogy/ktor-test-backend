@@ -5,9 +5,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import kotlinx.serialization.Serializable
-import org.example.dto.BaseTrack
-import org.example.dto.BaseTrackWithArtists
-import org.example.dto.toBaseDTO
+import org.example.dto.TrackWithArtists
 import org.example.dto.toBaseDTOWithArtists
 import org.example.model.ArtistEntity
 import org.example.tools.cacheControl
@@ -19,7 +17,7 @@ const val tracksLimitDefault = 9
 
 @Serializable
 data class GetArtistTopTracksResponse(
-	val tracks: List<BaseTrackWithArtists> = listOf()
+	val tracks: List<TrackWithArtists> = listOf()
 )
 
 fun Route.getTopTracksByArtist() {

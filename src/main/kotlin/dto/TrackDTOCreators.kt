@@ -5,15 +5,15 @@ import org.example.model.TrackEntity
 import org.jetbrains.exposed.sql.transactions.transaction
 
 @Serializable
-open class BaseTrack(
+open class Track(
 	val id: String = "",
 	val name: String = "",
 	val imageUrl: String? = "",
 	val indexInAlbum: Int = 0
 )
 
-fun TrackEntity.toBaseDTO() : BaseTrack {
-	return BaseTrack(
+fun TrackEntity.toBaseDTO() : Track {
+	return Track(
 		id = id.value.toString(),
 		name = name,
 		imageUrl = transaction { album.imageUrl },
@@ -22,16 +22,16 @@ fun TrackEntity.toBaseDTO() : BaseTrack {
 }
 
 @Serializable
-open class BaseTrackWithArtists(
+open class TrackWithArtists(
 	val id: String = "",
 	val name: String = "",
 	val imageUrl: String? = "",
 	val indexInAlbum: Int = 0,
-	val artists: List<BaseArtist> = listOf()
+	val artists: List<Artist> = listOf()
 )
 
-fun TrackEntity.toBaseDTOWithArtists() : BaseTrackWithArtists {
-	return BaseTrackWithArtists(
+fun TrackEntity.toBaseDTOWithArtists() : TrackWithArtists {
+	return TrackWithArtists(
 		id = id.value.toString(),
 		name = name,
 		imageUrl = transaction { album.imageUrl },
@@ -51,7 +51,7 @@ class FullTrack(
 	val listening: Int? = 0,
 	val isExplicit: Boolean? = false,
 	val audioUrl: String = "",
-	val album: BaseAlbum = BaseAlbum()
+	val album: Album = Album()
 )
 
 fun TrackEntity.toFullDTO(audioUrl: String) : FullTrack {

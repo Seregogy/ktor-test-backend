@@ -11,7 +11,7 @@ data class SocialMedia(
 )
 
 @Serializable
-data class BaseArtist(
+data class Artist(
 	val id: String = "",
 	val name: String = "unknown artist",
 	val about: String? = "unknown artist",
@@ -26,12 +26,11 @@ data class FullArtist(
 	val listeningInMonth: Int = 0,
 	val likes: Int = 0,
 	val images: List<String> = listOf(),
-	val socialMedias: List<SocialMedia> = listOf(),
-	val albums: List<BaseAlbum> = listOf()
+	val socialMedias: List<SocialMedia> = listOf()
 )
 
-fun ArtistEntity.toBaseDTO(): BaseArtist {
-	return BaseArtist(
+fun ArtistEntity.toBaseDTO(): Artist {
+	return Artist(
 		id = id.value.toString(),
 		name = name,
 		about = about,
@@ -49,7 +48,6 @@ fun ArtistEntity.toFullDTO() : FullArtist {
 		listeningInMonth = transaction { albums.flatMap { it.tracks }.sumOf { it.listening } },
 		likes = likes,
 		images = transaction { images.map { it.imageUrl }.toList() },
-		socialMedias = transaction { socialMedias.toList().map { SocialMedia(it.socialMediaName, it.link) } },
-		albums = transaction { albums.map { it.toBaseDTO() } }
+		socialMedias = transaction { socialMedias.toList().map { SocialMedia(it.socialMediaName, it.link) } }
 	)
 }

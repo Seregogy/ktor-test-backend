@@ -4,9 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import org.example.dto.BaseTrack
 import org.example.dto.FullArtist
-import org.example.dto.toBaseDTO
 import org.example.dto.toFullDTO
 import org.example.model.ArtistEntity
 import org.example.tools.cacheControl

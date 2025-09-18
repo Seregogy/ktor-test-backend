@@ -4,7 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import org.example.dto.BaseAlbum
+import org.example.dto.Album
 import org.example.dto.toBaseDTO
 import org.example.model.ArtistEntity
 import org.example.tools.cacheControl
@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 @Serializable
 private data class GetAlbumsByArtistResponse(
-	val albums: List<BaseAlbum> = listOf()
+	val albums: List<Album> = listOf()
 )
 
 fun Route.getAlbumsByArtist() {

@@ -21,7 +21,7 @@ fun Route.getAlbumById() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "not stated i"
+				"id" to "not stated"
 			)
 		)
 

@@ -28,6 +28,7 @@ dependencies {
 	implementation("io.ktor:ktor-server-swagger:${ktorVersion}")
 
 	implementation("io.ktor:ktor-server-caching-headers:${ktorVersion}")
+	implementation("io.ktor:ktor-server-cors:${ktorVersion}")
 
 	implementation("io.ktor:ktor-server-auth:${ktorVersion}")
 	implementation("io.ktor:ktor-server-auth-jwt:${ktorVersion}")

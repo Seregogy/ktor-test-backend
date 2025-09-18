@@ -5,15 +5,15 @@ import org.example.model.AlbumEntity
 import org.jetbrains.exposed.sql.transactions.transaction
 
 @Serializable
-data class BaseAlbum(
+data class Album(
 	val id: String = "",
 	val name: String = "",
 	val imageUrl: String = "",
-	val artists: List<BaseArtist> = listOf()
+	val artists: List<Artist> = listOf()
 )
 
-fun AlbumEntity.toBaseDTO(): BaseAlbum {
-	return BaseAlbum(
+fun AlbumEntity.toBaseDTO(): Album {
+	return Album(
 		id = id.value.toString(),
 		name = name,
 		imageUrl = imageUrl ?: "",
@@ -23,18 +23,20 @@ fun AlbumEntity.toBaseDTO(): BaseAlbum {
 
 @Serializable
 data class FullAlbum(
+	val id: String = "",
 	val name: String = "",
+	val imageUrl: String? = null,
+	val artists: List<Artist> = listOf(),
 	val likes: Int = 0,
 	val listening: Int = 0,
 	val releaseDate: Long = 0,
-	val imageUrl: String? = null,
 	val label: String? = null,
-	val tracks: List<BaseTrack> = listOf(),
-	val artists: List<BaseArtist> = listOf()
+	val tracks: List<Track> = listOf()
 )
 
 fun AlbumEntity.toFullDTO() : FullAlbum {
 	return FullAlbum(
+		id = id.value.toString(),
 		name = name,
 		likes = likes,
 		listening = transaction { tracks.sumOf { it.listening } },

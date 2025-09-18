@@ -1,0 +1,275 @@
+openapi: 3.0.0
+info:
+  title: Music service API
+  description: Полная документация
+  version: 1.0.0
+
+servers:
+  - url: http://95.31.212.185:7777
+    description: Production server
+  - url: http://127.0.0.1:8080
+    description: Development server
+
+paths:
+  /api/v1/tracks/random:
+    get:
+      summary: Редирект на tracks/{id} с рандомным id
+      responses:
+        '302':
+          description: Редирект на /api/v1/tracks/{id}
+        '200':
+          description: Полная информация о треке
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullTrack'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Описание ошибки
+
+  /api/v1/tracks/{id}:
+    get:
+      summary: Возвращает полную информацию о треке
+      parameters:
+        - in: path
+          name: id
+          description: Id, запрашиваемого трека
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: 9703c54c-a360-4266-8e8a-2c0977c4c592
+      responses:
+        '200':
+          description: Полная информация о треке
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullTrack'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Описание ошибки
+        '404':
+          description: Ошибка в запросе
+        default:
+          description: Непредвиденная ошибка
+
+components:
+  schemas:
+    Album:
+      type: object
+      description: Минимальные данные о альбоме
+      properties:
+        id:
+          type: string
+          format: UUID
+          example: 350cd1a4-6bc6-45fd-8516-ce852b2ebb2f
+        name:
+          type: string
+          description: Название альбома
+          example: Blurryface
+        imageUrl:
+          type: string
+          description: Ссылка на обложку альбома 
+          example: https://st-petersburg.pult.ru/upload/iblock/fd6/fd683b62ed553b24285ecf1d1c47e8a0.jpg
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+      required:
+        - id
+        - name
+        - imageUrl
+
+    FullAlbum:
+      type: object
+      description: Полные данные о альбому
+      properties:
+        id:
+          type: string
+          format: UUID
+          example: 350cd1a4-6bc6-45fd-8516-ce852b2ebb2f
+        name:
+          type: string
+          description: Название альбома
+          example: Blurryface
+        imageUrl:
+          type: string
+          description: Ссылка на обложку альбома 
+          example: https://st-petersburg.pult.ru/upload/iblock/fd6/fd683b62ed553b24285ecf1d1c47e8a0.jpg
+        artists:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artist'
+        likes:
+          type: string
+          description: Количество лайков альбому за всё время
+        listening: 
+          type: string
+          description: Количество стримов альбома за всё время
+        releaseDate:
+          type: number
+          format: UNIX timestamp
+        label:
+          type: string
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+      required:
+        - id
+        - name
+        - imageUrl
+    
+    Track:
+      type: object
+      description: Минимальные данные о треке
+      properties:
+        id:
+          type: string
+          format: UUID
+          example: 9703c54c-a360-4266-8e8a-2c0977c4c592
+        name:
+          type: string
+          description: Название трека
+          example: Stressed Out
+        imageUrl:
+          type: string
+          description: Ссылка на обложку альбома, содержащего данный трек
+          example: https://st-petersburg.pult.ru/upload/iblock/fd6/fd683b62ed553b24285ecf1d1c47e8a0.jpg
+        indexInAlbum:
+          type: integer
+      required:
+        - id
+        - name
+        - imageUrl
+        - indexInAlbum
+
+    FullTrack:
+      type: object
+      description: Полные данные о треке
+      properties:
+        id:
+          type: string
+          format: UUID
+          example: 9703c54c-a360-4266-8e8a-2c0977c4c592
+        name:
+          type: string
+          description: Название трека
+          example: Stressed Out
+        imageUrl:
+          type: string
+          description: Ссылка на обложку альбома, содержащего данный трек
+          example: https://st-petersburg.pult.ru/upload/iblock/fd6/fd683b62ed553b24285ecf1d1c47e8a0.jpg
+        indexInAlbum:
+          type: integer
+        durationSeconds:
+          type: number
+          format: Long
+          description: Длительность трека в мс.
+        lyrics:
+          type: string
+          description: В будущем будет переделано в объект, содержащий обычный текст и текст с таймкодами
+        isExplicit:
+          type: boolean
+          description: Имеет ли трек ограничение 18+
+        audioUrl:
+          type: string
+          description: Прямая ссылка на статический аудио ресурс для загрузки и стриминга
+          example: http://95.31.212.185:7777/audio/9703c54c-a360-4266-8e8a-2c0977c4c592.mp3
+        album:
+          type: object
+          $ref: '#/components/schemas/Album'
+      required:
+        - id
+        - name
+        - imageUrl
+        - indexInAlbum
+
+    Artist:
+      type: object
+      properties:
+        id:
+          type: string
+          format: UUID
+          example: ab29457d-0ccf-4b12-aa22-40827e1ff6c7
+        name:
+          type: string
+          description: Имя автора/группы
+          example: Twenty One Pilots
+        about:
+          type: string
+          description: Краткая информация об артисте
+        imageUrl:
+          type: string
+          format: url
+          description: Первая ссылка на аватарку
+          example: https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSLRimoO0Q7LtM3t--wcBAu2JxbWsLwzT-_YpU4I2E0dwWxT8kjYRnKmnixh45BJE1_GGmHlyjL-H7VynzS9Ukf8A
+      required:
+        - id
+        - name
+        - imageUrl
+
+    FullArtist:
+      type: object
+      properties:
+        id:
+          type: string
+          format: UUID
+          example: ab29457d-0ccf-4b12-aa22-40827e1ff6c7
+        name:
+          type: string
+          description: Имя автора/группы
+          example: Twenty One Pilots
+        about:
+          type: string
+          description: Краткая информация об артисте
+        listeningInMonth:
+          type: integer
+          description: Количество стримов данного артиста за месяц
+          example: 3923
+        likes:
+          type: integer
+          description: Количество добавлений в избранные артисты за всё время
+          example: 5023
+        images:
+          type: array
+          description: Ссылки на все аватарки
+          items:
+            type: string
+        socialMedias:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialMedia'
+      required:
+        - id
+        - name
+        - listeningInMonth
+        - likes
+        - images
+
+    SocialMedia:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Название соц. сети
+          example: YouTube
+        link:
+          type: string
+          format: url
+          example: https://youtube.com/

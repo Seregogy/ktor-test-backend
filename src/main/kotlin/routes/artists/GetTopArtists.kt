@@ -4,7 +4,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import kotlinx.serialization.Serializable
-import org.example.dto.BaseArtist
+import org.example.dto.Artist
 import org.example.dto.toBaseDTO
 import org.example.model.ArtistEntity
 import org.example.tools.cacheControl
@@ -15,7 +15,7 @@ private val defaulLimit = 5
 
 @Serializable
 data class GetTopArtistsResponse(
-	val artists: List<BaseArtist>
+	val artists: List<Artist>
 )
 
 //TODO: оптимизировать подсчёт прослушиваний
