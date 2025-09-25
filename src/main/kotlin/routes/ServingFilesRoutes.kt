@@ -10,7 +10,7 @@ fun Application.servingFilesRoutes() {
 	routing {
 		staticFiles("/images", File("src/files/images"))
 
-		staticFiles("/audio", dir = File("src/files/audio")) {
+		staticFiles("/audio", File("src/files/audio")) {
 			contentType {
 				ContentType.Audio.MPEG
 			}

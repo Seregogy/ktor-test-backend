@@ -25,7 +25,7 @@ fun Route.getTrack() {
 		}?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "not stated or invalid"
+				"error" to "id not stated or invalid"
 			)
 		)
 
@@ -34,7 +34,7 @@ fun Route.getTrack() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.NotFound,
 			message = mapOf(
-				"id" to "invalid"
+				"error" to "id invalid"
 			)
 		)
 
@@ -43,7 +43,7 @@ fun Route.getTrack() {
 		call.cacheControl(10.minutes())
 		call.respond(
 			track.toFullDTO(call.request.origin.let {
-				"${it.scheme}://${externalHost}:${externalPort}/audio/${track.id}.mp3"
+				"https://${externalHost}/audio/${track.id}.mp3"
 			})
 		)
 	}

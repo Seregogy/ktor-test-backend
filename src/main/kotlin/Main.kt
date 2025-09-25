@@ -17,7 +17,6 @@ import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
-import org.example.databaseAccessor.addArtistToDb
 import org.example.model.*
 import org.example.routes.albums.albumsRoutes
 import org.example.routes.artists.artistsRoutes
@@ -27,11 +26,10 @@ import org.example.routes.auth.issuer
 import org.example.routes.auth.secret
 import org.example.routes.servingFilesRoutes
 import org.example.routes.tracks.tracksRoutes
-import org.example.routes.userRoutes
+import org.example.routes.users.usersRoutes
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.nio.file.Path
 
 fun main() {
 	prepareToServerLaunch()
@@ -45,7 +43,7 @@ fun main() {
 
 		servingFilesRoutes()
 		authRoutes()
-		userRoutes()
+		usersRoutes()
 		tracksRoutes()
 		albumsRoutes()
 		artistsRoutes()

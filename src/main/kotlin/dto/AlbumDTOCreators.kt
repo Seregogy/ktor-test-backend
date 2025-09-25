@@ -30,8 +30,7 @@ data class FullAlbum(
 	val likes: Int = 0,
 	val listening: Int = 0,
 	val releaseDate: Long = 0,
-	val label: String? = null,
-	val tracks: List<Track> = listOf()
+	val label: String? = null
 )
 
 fun AlbumEntity.toFullDTO() : FullAlbum {
@@ -43,7 +42,6 @@ fun AlbumEntity.toFullDTO() : FullAlbum {
 		releaseDate = releaseDate,
 		imageUrl = imageUrl,
 		label = label,
-		tracks = transaction { tracks.map { it.toBaseDTO() } },
 		artists = transaction { artists.map { it.toBaseDTO() } }
 	)
 }

@@ -11,6 +11,7 @@ fun Application.tracksRoutes() {
 			getTrack()
 			toggleLike()
 			getAlbumByTrack()
+			getTracks()
 		}
 	}
 }

@@ -43,7 +43,15 @@ fun Route.getTopTracksByArtist() {
 		)
 
 		val tracks = transaction {
-			artist.albums.flatMap { it.tracks }.sortedByDescending { it.listening }.take(tracksLimit).map { it.toBaseDTOWithArtists() }
+			artist.albums
+				.flatMap { it.tracks }
+				.sortedByDescending { it.listening }
+				.take(tracksLimit)
+				.map {
+					it.toBaseDTOWithArtists(
+						"${System.getenv(" baseUrl ")}/audio/${it.id}.mp3"
+					)
+				}
 		}
 
 		call.cacheControl(5.minutes())

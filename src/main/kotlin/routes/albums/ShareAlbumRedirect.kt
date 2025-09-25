@@ -12,7 +12,7 @@ fun Route.shareAlbumRedirect() {
 		val albumId = call.parameters["id"] ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "not stated"
+				"error" to "id not stated"
 			)
 		)
 

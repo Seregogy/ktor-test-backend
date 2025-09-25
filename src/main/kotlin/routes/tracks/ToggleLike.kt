@@ -30,7 +30,7 @@ fun Route.toggleLike() {
 			val trackId = call.parameters["trackId"] ?: return@post call.respond(
 				status = HttpStatusCode.BadRequest,
 				mapOf(
-					"trackId" to "not stated"
+					"error" to "id not stated"
 				)
 			)
 
@@ -38,7 +38,7 @@ fun Route.toggleLike() {
 			val userId = principal?.payload?.getClaim("id")?.asString() ?: return@post call.respond(
 				status = HttpStatusCode.Forbidden,
 				message = mapOf(
-					"access token payload" to "data not found"
+					"error" to "access token payload invalid"
 				)
 			)
 
@@ -47,7 +47,7 @@ fun Route.toggleLike() {
 			} ?: return@post call.respond(
 				status = HttpStatusCode.NotFound,
 				message = mapOf(
-					"trackId" to "invalid"
+					"error" to "invalid id"
 				)
 			)
 
@@ -56,7 +56,7 @@ fun Route.toggleLike() {
 			} ?: return@post call.respond(
 				status = HttpStatusCode.NotFound,
 				message = mapOf(
-					"access token payload" to "invalid"
+					"error" to "access token payload invalid"
 				)
 			)
 

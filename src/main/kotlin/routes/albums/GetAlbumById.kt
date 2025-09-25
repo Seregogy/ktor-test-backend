@@ -1,15 +1,11 @@
 package org.example.routes.albums
 
 import io.ktor.http.*
-import io.ktor.http.content.CachingOptions
-import io.ktor.server.plugins.cachingheaders.CachingHeaders
-import io.ktor.server.plugins.cachingheaders.caching
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.example.dto.toFullDTO
 import org.example.model.AlbumEntity
 import org.example.tools.cacheControl
-import org.example.tools.hours
 import org.example.tools.minutes
 import org.example.tools.tryParseUUIDFromString
 import org.jetbrains.exposed.sql.transactions.transaction

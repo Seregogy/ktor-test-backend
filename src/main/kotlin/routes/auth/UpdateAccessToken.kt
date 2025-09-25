@@ -44,7 +44,7 @@ fun Route.updateAccessToken(tokenBuilder: JWTCreator.Builder) {
 				return@post call.respond(
 					status = HttpStatusCode.Forbidden,
 					message = mapOf(
-						"token" to "invalid"
+						"error" to "invalid token"
 					)
 				)
 			}

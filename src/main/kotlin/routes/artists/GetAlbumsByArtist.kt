@@ -24,7 +24,7 @@ fun Route.getAlbumsByArtist() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "not stated or invalid"
+				"error" to "id not stated or invalid"
 			)
 		)
 
@@ -33,7 +33,7 @@ fun Route.getAlbumsByArtist() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "invalid"
+				"error" to "invalid id"
 			)
 		)
 

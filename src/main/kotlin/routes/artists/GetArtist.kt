@@ -25,7 +25,7 @@ fun Route.getArtist() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "not stated"
+				"error" to "id not stated"
 			)
 		)
 
@@ -34,7 +34,7 @@ fun Route.getArtist() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.NotFound,
 			message = mapOf(
-				"id" to "invalid"
+				"error" to "invalid id"
 			)
 		)
 

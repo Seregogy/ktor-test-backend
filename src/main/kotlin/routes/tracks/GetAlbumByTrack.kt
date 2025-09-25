@@ -14,7 +14,7 @@ fun Route.getAlbumByTrack() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "not stated or invalid"
+				"error" to "id not stated or invalid"
 			)
 		)
 
@@ -23,7 +23,7 @@ fun Route.getAlbumByTrack() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.NotFound,
 			message = mapOf(
-				"id" to "album id not found or track id is invalid"
+				"error" to "album id not found or track id is invalid"
 			)
 		)
 

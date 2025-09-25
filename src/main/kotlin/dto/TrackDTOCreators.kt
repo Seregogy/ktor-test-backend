@@ -9,15 +9,17 @@ open class Track(
 	val id: String = "",
 	val name: String = "",
 	val imageUrl: String? = "",
-	val indexInAlbum: Int = 0
+	val indexInAlbum: Int = 0,
+	val audioUrl: String = "",
 )
 
-fun TrackEntity.toBaseDTO() : Track {
+fun TrackEntity.toBaseDTO(audioUrl: String) : Track {
 	return Track(
 		id = id.value.toString(),
 		name = name,
 		imageUrl = transaction { album.imageUrl },
-		indexInAlbum = indexInAlbum
+		indexInAlbum = indexInAlbum,
+		audioUrl = audioUrl
 	)
 }
 
@@ -27,16 +29,18 @@ open class TrackWithArtists(
 	val name: String = "",
 	val imageUrl: String? = "",
 	val indexInAlbum: Int = 0,
-	val artists: List<Artist> = listOf()
+	val artists: List<Artist> = listOf(),
+	val audioUrl: String = "",
 )
 
-fun TrackEntity.toBaseDTOWithArtists() : TrackWithArtists {
+fun TrackEntity.toBaseDTOWithArtists(audioUrl: String) : TrackWithArtists {
 	return TrackWithArtists(
 		id = id.value.toString(),
 		name = name,
 		imageUrl = transaction { album.imageUrl },
 		indexInAlbum = indexInAlbum,
-		artists = artists.map { it.toBaseDTO() }
+		artists = artists.map { it.toBaseDTO() },
+		audioUrl = audioUrl
 	)
 }
 

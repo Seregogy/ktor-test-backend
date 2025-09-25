@@ -9,6 +9,7 @@ fun Application.albumsRoutes() {
 		route("/api/v1/albums") {
 			getAlbumById()
 			shareAlbumRedirect()
+			getTracksByAlbum()
 		}
 	}
 }

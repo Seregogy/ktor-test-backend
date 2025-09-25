@@ -39,7 +39,7 @@ fun Route.register(tokenBuilder: JWTCreator.Builder) {
 			return@post call.respond(
 				status = HttpStatusCode.Conflict,
 				message = mapOf(
-					"user" to "user with same email already exists"
+					"error" to "user with same email already exists"
 				)
 			)
 		}

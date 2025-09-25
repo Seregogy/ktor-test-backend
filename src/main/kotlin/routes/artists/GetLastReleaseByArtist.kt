@@ -26,7 +26,7 @@ fun Route.getLastReleaseByArtist() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "not stated or invalid"
+				"error" to "id not stated or invalid"
 			)
 		)
 
@@ -35,7 +35,7 @@ fun Route.getLastReleaseByArtist() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.BadRequest,
 			message = mapOf(
-				"id" to "invalid"
+				"error" to "invalid id"
 			)
 		)
 
@@ -44,7 +44,7 @@ fun Route.getLastReleaseByArtist() {
 		} ?: return@get call.respond(
 			status = HttpStatusCode.NotFound,
 			message = mapOf(
-				"release" to "not found"
+				"error" to "item not found"
 			)
 		)
 
