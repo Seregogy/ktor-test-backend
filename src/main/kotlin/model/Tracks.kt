@@ -42,8 +42,8 @@ object TracksToGenreTable : UUIDTable("TRACKS_TO_GENRE_TABLE") {
 }
 
 object LyricsTable : UUIDTable("LYRICS_TABLE") {
-	val plainText = text("plain_text")
-	val syncedText = text("synced_text")
+	val plainText = text("plain_text").nullable()
+	val syncedText = text("synced_text").nullable()
 
 	val track = reference("track", TracksTable).uniqueIndex()
 }
@@ -54,7 +54,7 @@ class LyricsEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 	var plainText by LyricsTable.plainText
 	var syncedText by LyricsTable.syncedText
 
-	val track by TrackEntity referencedOn LyricsTable.track
+	var track by TrackEntity referencedOn LyricsTable.track
 }
 
 class TrackGenreEntity(id: EntityID<UUID>) : UUIDEntity(id) {

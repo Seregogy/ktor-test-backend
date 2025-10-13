@@ -14,7 +14,7 @@ data class Album(
 
 fun AlbumEntity.toBaseDTO(): Album = transaction {
 	Album(
-		id = id,
+		id = this@toBaseDTO.id.value.toString(),
 		name = name,
 		imageUrl = imageUrl ?: "",
 		artists = artists.map { it.toBaseDTO() }
@@ -35,7 +35,7 @@ data class FullAlbum(
 
 fun AlbumEntity.toFullDTO() : FullAlbum = transaction {
 	FullAlbum(
-		id = id,
+		id = this@toFullDTO.id.value.toString(),
 		name = name,
 		likes = likes,
 		listening = tracks.sumOf { it.listening },

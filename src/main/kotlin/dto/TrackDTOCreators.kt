@@ -16,7 +16,7 @@ data class Track(
 
 fun TrackEntity.toBaseDTO(audioUrl: String) : Track = transaction {
 	Track(
-		id = id,
+		id = this@toBaseDTO.id.value.toString(),
 		name = name,
 		imageUrl = album.imageUrl,
 		indexInAlbum = indexInAlbum,
@@ -36,7 +36,7 @@ data class TrackWithArtists(
 
 fun TrackEntity.toBaseDTOWithArtists(audioUrl: String) : TrackWithArtists = transaction {
 	TrackWithArtists(
-		id = id,
+		id = this@toBaseDTOWithArtists.id.value.toString(),
 		name = name,
 		imageUrl = album.imageUrl,
 		indexInAlbum = indexInAlbum,
@@ -67,7 +67,7 @@ data class FullTrack(
 
 fun TrackEntity.toFullDTO(audioUrl: String) : FullTrack = transaction {
 	FullTrack(
-		id = id,
+		id = this@toFullDTO.id.value.toString(),
 		name = name,
 		imageUrl = album.imageUrl,
 		indexInAlbum = indexInAlbum,
@@ -82,7 +82,7 @@ fun TrackEntity.toFullDTO(audioUrl: String) : FullTrack = transaction {
 
 fun LyricsEntity.toDTO(): Lyrics {
 	return Lyrics(
-		plainText,
-		syncedText
+		plainText ?: "",
+		syncedText ?: ""
 	)
 }

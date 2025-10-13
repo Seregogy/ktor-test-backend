@@ -31,7 +31,7 @@ data class FullArtist(
 
 fun ArtistEntity.toBaseDTO(): Artist = transaction {
 	Artist(
-		id = id,
+		id = this@toBaseDTO.id.value.toString(),
 		name = name,
 		about = about,
 		imageUrl = imagesUrl.firstOrNull()?.imageUrl ?: ""
@@ -40,7 +40,7 @@ fun ArtistEntity.toBaseDTO(): Artist = transaction {
 
 fun ArtistEntity.toFullDTO() : FullArtist = transaction {
 	FullArtist(
-		id = id,
+		id = this@toFullDTO.id.value.toString(),
 		name = name,
 		about = about,
 		listeningInMonth = albums.flatMap { it.tracks }.sumOf { it.listening },
