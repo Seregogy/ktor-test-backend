@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: https://seregogy-music.duckdns.org
+  - url: https://onewave.duckdns.org
     description: Production server
   - url: http://127.0.0.1:8080
     description: Development server
@@ -67,8 +67,632 @@ paths:
           description: Ошибка в запросе
         default:
           description: Непредвиденная ошибка
+  
+  /api/v1/artists/top:
+    get:
+      summary: Возвращает топ артистов по количеству прослушиваний
+      parameters:
+        - in: query
+          name: limit
+          description: Количество возвращаемых артистов (по умолчанию 5)
+          schema:
+            type: integer
+            example: 5
+      responses:
+        '200':
+          description: Список топ артистов
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  artists:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Artist'
+
+  /api/v1/artists/{id}:
+    get:
+      summary: Возвращает полную информацию об артисте
+      parameters:
+        - in: path
+          name: id
+          description: ID артиста
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: ab29457d-0ccf-4b12-aa22-40827e1ff6c7
+      responses:
+        '200':
+          description: Полная информация об артисте
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  artist:
+                    $ref: '#/components/schemas/FullArtist'
+        '400':
+          description: Некорректный ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id not stated"
+        '404':
+          description: Артист не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "invalid id"
+
+  /api/v1/artists/{id}/tracks/top:
+    get:
+      summary: Возвращает топ треков артиста по прослушиваниям
+      parameters:
+        - in: path
+          name: id
+          description: ID артиста
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: ab29457d-0ccf-4b12-aa22-40827e1ff6c7
+        - in: query
+          name: limit
+          description: Количество возвращаемых треков (по умолчанию 9)
+          schema:
+            type: integer
+            example: 9
+      responses:
+        '200':
+          description: Топ треков артиста
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tracks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Track'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "not stated"
+        '404':
+          description: Артист не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "invalid"
+
+  /api/v1/artists/{id}/albums:
+    get:
+      summary: Возвращает все альбомы артиста (исключая синглы)
+      parameters:
+        - in: path
+          name: id
+          description: ID артиста
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: ab29457d-0ccf-4b12-aa22-40827e1ff6c7
+      responses:
+        '200':
+          description: Список альбомов артиста
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  albums:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Album'
+        '400':
+          description: Некорректный ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id not stated or invalid"
+
+  /api/v1/artists/{id}/singles:
+    get:
+      summary: Возвращает синглы артиста
+      parameters:
+        - in: path
+          name: id
+          description: ID артиста
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: ab29457d-0ccf-4b12-aa22-40827e1ff6c7
+      responses:
+        '200':
+          description: Список синглов артиста
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  singles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Album'
+        '400':
+          description: Некорректный ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id not stated or invalid"
+
+  /api/v1/artists/{id}/releases:
+    get:
+      summary: Возвращает все релизы артиста (альбомы и синглы)
+      parameters:
+        - in: path
+          name: id
+          description: ID артиста
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: ab29457d-0ccf-4b12-aa22-40827e1ff6c7
+      responses:
+        '200':
+          description: Список всех релизов артиста
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  releases:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Album'
+        '400':
+          description: Некорректный ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id not stated or invalid"
+
+  /api/v1/artists/{id}/albums/latest:
+    get:
+      summary: Возвращает последний релиз артиста
+      parameters:
+        - in: path
+          name: id
+          description: ID артиста
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: ab29457d-0ccf-4b12-aa22-40827e1ff6c7
+      responses:
+        '200':
+          description: Последний релиз артиста и дата выпуска
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lastAlbum:
+                    $ref: '#/components/schemas/Album'
+                  releaseDate:
+                    type: integer
+                    format: UNIX timestamp
+                    description: Дата выпуска в формате UNIX timestamp
+                    example: 1672531200
+        '400':
+          description: Некорректный ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id not stated or invalid"
+        '404':
+          description: Релизы не найдены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "item not found"
+  
+  /api/v1/albums/{id}:
+    get:
+      summary: Возвращает полную информацию об альбоме
+      parameters:
+        - in: path
+          name: id
+          description: ID альбома
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: 350cd1a4-6bc6-45fd-8516-ce852b2ebb2f
+      responses:
+        '200':
+          description: Полная информация об альбоме
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullAlbum'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "not stated"
+
+  /api/v1/albums/{id}/tracks:
+    get:
+      summary: Возвращает все треки альбома
+      parameters:
+        - in: path
+          name: id
+          description: ID альбома
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: 350cd1a4-6bc6-45fd-8516-ce852b2ebb2f
+      responses:
+        '200':
+          description: Список треков альбома
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tracks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Track'
+        '400':
+          description: Некорректный ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id not stated"
+
+  /api/v1/albums/{id}/share:
+    get:
+      summary: Редирект для шаринга альбома
+      parameters:
+        - in: path
+          name: id
+          description: ID альбома
+          required: true
+          schema:
+            type: string
+            example: 350cd1a4-6bc6-45fd-8516-ce852b2ebb2f
+      responses:
+        '302':
+          description: Редирект на musicapp:// схему
+        '400':
+          description: ID не указан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id not stated"
+
+  /api/v1/tracks:
+    post:
+      summary: Возвращает информацию о нескольких треках по их ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tracks:
+                  type: array
+                  items:
+                    type: string
+                    format: UUID
+                    example: 9703c54c-a360-4266-8e8a-2c0977c4c592
+      responses:
+        '200':
+          description: Список треков
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tracks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FullTrack'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "invalid request"
+
+  /api/v1/tracks/{id}/album:
+    get:
+      summary: Редирект на альбом, содержащий трек
+      parameters:
+        - in: path
+          name: id
+          description: ID трека
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: 9703c54c-a360-4266-8e8a-2c0977c4c592
+      responses:
+        '302':
+          description: Редирект на /api/v1/albums/{albumId}
+        '400':
+          description: Некорректный ID трека
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id not stated or invalid"
+        '404':
+          description: Трек или альбом не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "album id not found or track id is invalid"
+
+  /api/v1/tracks/{trackId}/like:
+    post:
+      summary: Добавляет/удаляет трек в избранное (требует аутентификации)
+      security:
+        - auth-jwt: []
+      parameters:
+        - in: path
+          name: trackId
+          description: ID трека
+          required: true
+          schema:
+            type: string
+            format: UUID
+            example: 9703c54c-a360-4266-8e8a-2c0977c4c592
+      responses:
+        '200':
+          description: Статус лайка после операции
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  trackId:
+                    type: string
+                    format: UUID
+                  liked:
+                    type: boolean
+        '400':
+          description: ID не указан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "id not stated"
+        '403':
+          description: Невалидный access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "access token payload invalid"
+        '404':
+          description: Трек или пользователь не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "invalid id"
+
+  /api/v1/tracks/random/id:
+        get:
+          summary: Возвращает случайный ID трека
+          responses:
+            '200':
+              description: Случайный ID трека
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: UUID
+
+  /api/v1/auth/register:
+    post:
+      summary: Регистрация нового пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Имя пользователя (1-32 символа)
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  description: Email пользователя
+                  example: "user@example.com"
+                password:
+                  type: string
+                  description: Пароль (минимум 8 символов)
+                  example: "securepassword123"
+      responses:
+        '201':
+          description: Пользователь успешно зарегистрирован
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: UUID
+                    description: ID пользователя
+                  name:
+                    type: string
+                    description: Имя пользователя
+                  accessToken:
+                    type: string
+                    description: Access token (действует 30 дней)
+                  refreshToken:
+                    type: string
+                    description: Refresh token (бессрочный)
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "name is to short or to long"
+                  email:
+                    type: string
+                    example: "invalid email"
+                  password:
+                    type: string
+                    example: "password is to short"
+        '409':
+          description: Пользователь с таким email уже существует
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "user with same email already exists"
+
+  /api/v1/auth/refresh-token:
+    post:
+      summary: Обновление access token с помощью refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  description: Refresh token
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: Токены успешно обновлены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: Новый access token (действует 30 дней)
+                  refreshToken:
+                    type: string
+                    description: Новый refresh token (бессрочный)
+        '403':
+          description: Невалидный refresh token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "invalid token"
 
 components:
+  securitySchemes:
+    auth-jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     Album:
       type: object
@@ -263,6 +887,7 @@ components:
         - images
 
     SocialMedia:
+
       type: object
       properties:
         name:

@@ -7,6 +7,8 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import org.example.model.UserEntity
 import org.example.model.UsersTable
@@ -44,6 +46,12 @@ fun Route.register(tokenBuilder: JWTCreator.Builder) {
 			)
 		}
 
+		transaction {
+			UserEntity.all().forEach {
+				println("${it.email}, ${it.name}")
+			}
+		}
+
 		validateRequest(request)?.let {
 			return@post call.respond(
 				status = HttpStatusCode.BadRequest,
@@ -51,35 +59,39 @@ fun Route.register(tokenBuilder: JWTCreator.Builder) {
 			)
 		}
 
-		suspendedTransactionAsync {
-			val user = UserEntity.new {
-				name = request.name
-				email = request.email
-				passwordHash = request.password.hashCode().toString()
+		val result = withContext(Dispatchers.IO) {
+			transaction {
+				val user = UserEntity.new {
+					name = request.name
+					email = request.email
+					passwordHash = request.password.hashCode().toString()
+				}
+
+				val accessToken = tokenBuilder
+					.withClaim("id", user.id.value.toString())
+					.withExpiresAt(Date(System.currentTimeMillis().plus(30.days.toInt(DurationUnit.MILLISECONDS))))
+					.sign(Algorithm.HMAC256(secret))
+
+				val refreshToken = tokenBuilder
+					.withClaim("id", user.id.value.toString())
+					.withExpiresAt(Date(Long.MAX_VALUE))
+					.sign(Algorithm.HMAC256(secret))
+
+				user.refreshToken = refreshToken
+
+				return@transaction user to accessToken
 			}
-
-			val accessToken = tokenBuilder
-				.withClaim("id", user.id.value.toString())
-				.withExpiresAt(Date(System.currentTimeMillis().plus(30.days.toInt(DurationUnit.MILLISECONDS))))
-				.sign(Algorithm.HMAC256(secret))
-
-			val refreshToken = tokenBuilder
-				.withClaim("id", user.id.value.toString())
-				.withExpiresAt(Date(Long.MAX_VALUE))
-				.sign(Algorithm.HMAC256(secret))
-
-			user.refreshToken = refreshToken
-
-			call.respond(
-				status = HttpStatusCode.Created,
-				message = RegisterResponse(
-					id = user.id.value.toString(),
-					name = user.name,
-					accessToken = accessToken,
-					refreshToken = user.refreshToken
-				)
-			)
 		}
+
+		call.respond(
+			status = HttpStatusCode.Created,
+			message = RegisterResponse(
+				id = result.first.id.value.toString(),
+				name = result.first.name,
+				accessToken = result.second,
+				refreshToken = result.first.refreshToken
+			)
+		)
 	}
 }
 
@@ -92,7 +104,7 @@ fun validateRequest(registerRequest: RegisterRequest): Map<String, String>? {
 	if (validateEmail(registerRequest.email).not())
 		errors["email"] = "invalid email"
 
-	if (registerRequest.password.length in 0..8)
+	if (registerRequest.password.length < 8)
 		errors["password"] = "password is to short"
 
 	return errors.ifEmpty {

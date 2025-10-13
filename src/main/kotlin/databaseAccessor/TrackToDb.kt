@@ -30,7 +30,7 @@ fun addTrackToDb(
 
 	println("\t\t$trackName")
 
-	File(trackPath.pathString).renameTo(File("src/files/audio/${track.id}.mp3"))
+	File(trackPath.pathString).renameTo(File("src/files/audio/${track.id}.${trackPath.pathString.split('.').last()}"))
 
 	return track
 }

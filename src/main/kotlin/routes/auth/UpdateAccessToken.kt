@@ -7,6 +7,8 @@ import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import org.example.model.UserEntity
 import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
@@ -49,27 +51,31 @@ fun Route.updateAccessToken(tokenBuilder: JWTCreator.Builder) {
 				)
 			}
 
-			suspendedTransactionAsync {
-				val accessToken = tokenBuilder
-					.withClaim("id", user.id.toString())
-					.withExpiresAt(Date(System.currentTimeMillis().plus(30.days.toInt(DurationUnit.MILLISECONDS))))
-					.sign(Algorithm.HMAC256(secret))
+			val tokens = withContext(Dispatchers.IO) {
+				transaction {
+					val accessToken = tokenBuilder
+						.withClaim("id", user.id.toString())
+						.withExpiresAt(Date(System.currentTimeMillis().plus(30.days.toInt(DurationUnit.MILLISECONDS))))
+						.sign(Algorithm.HMAC256(secret))
 
-				val refreshToken = tokenBuilder
-					.withClaim("id", user.id.toString())
-					.withExpiresAt(Date(Long.MAX_VALUE))
-					.sign(Algorithm.HMAC256(secret))
+					val refreshToken = tokenBuilder
+						.withClaim("id", user.id.toString())
+						.withExpiresAt(Date(Long.MAX_VALUE))
+						.sign(Algorithm.HMAC256(secret))
 
-				user.refreshToken = refreshToken
+					user.refreshToken = refreshToken
 
-				call.respond(
-					status = HttpStatusCode.OK,
-					message = UpdateAccessTokensResponse(
-						accessToken = accessToken,
-						refreshToken = refreshToken
-					)
-				)
+					accessToken to refreshToken
+				}
 			}
+
+			call.respond(
+				status = HttpStatusCode.OK,
+				message = UpdateAccessTokensResponse(
+					accessToken = tokens.first,
+					refreshToken = tokens.second
+				)
+			)
 		}
 	}
 }

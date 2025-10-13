@@ -32,7 +32,7 @@ fun Route.getTracks() {
 				TrackEntity.find {
 					TracksTable.id inList request.tracks.map { UUID.fromString(it) }
 				}.map { track ->
-					track.toFullDTO("${System.getenv("baseUrl")}/audio/${track.id}.mp3")
+					track.toFullDTO("${System.getenv("baseUrl")}audio/${track.id}.mp3")
 				}
 			}
 		}.onSuccess {

@@ -29,25 +29,23 @@ data class FullArtist(
 	val socialMedias: List<SocialMedia> = listOf()
 )
 
-fun ArtistEntity.toBaseDTO(): Artist {
-	return Artist(
-		id = id.value.toString(),
+fun ArtistEntity.toBaseDTO(): Artist = transaction {
+	Artist(
+		id = id,
 		name = name,
 		about = about,
-		imageUrl = transaction { imagesUrl.firstOrNull()?.imageUrl } ?: ""
+		imageUrl = imagesUrl.firstOrNull()?.imageUrl ?: ""
 	)
 }
 
-fun ArtistEntity.toFullDTO() : FullArtist {
-	val images = transaction { imagesUrl }
-
-	return FullArtist(
-		id = id.value.toString(),
+fun ArtistEntity.toFullDTO() : FullArtist = transaction {
+	FullArtist(
+		id = id,
 		name = name,
 		about = about,
-		listeningInMonth = transaction { albums.flatMap { it.tracks }.sumOf { it.listening } },
+		listeningInMonth = albums.flatMap { it.tracks }.sumOf { it.listening },
 		likes = likes,
-		images = transaction { images.map { it.imageUrl }.toList() },
-		socialMedias = transaction { socialMedias.toList().map { SocialMedia(it.socialMediaName, it.link) } }
+		images = imagesUrl.map { it.imageUrl }.toList(),
+		socialMedias = socialMedias.toList().map { SocialMedia(it.socialMediaName, it.link) }
 	)
 }

@@ -11,12 +11,13 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.autohead.*
 import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.partialcontent.*
-import io.ktor.server.plugins.swagger.swaggerUI
+import io.ktor.server.plugins.swagger.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import org.example.databaseAccessor.addArtistToDb
 import org.example.model.*
 import org.example.routes.albums.albumsRoutes
 import org.example.routes.artists.artistsRoutes
@@ -30,6 +31,7 @@ import org.example.routes.users.usersRoutes
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.io.path.Path
 
 fun main() {
 	prepareToServerLaunch()
@@ -105,7 +107,7 @@ fun Application.configure() {
 		)
 	}
 
-	routing { swaggerUI(path = "docs", swaggerFile = "src/docs/documentation.yaml") }
+	routing { swaggerUI(path = "/api/docs", swaggerFile = "src/docs/documentation.yaml") }
 }
 
 private fun connectToDatabase() {

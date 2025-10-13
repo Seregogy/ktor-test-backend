@@ -12,12 +12,12 @@ data class Album(
 	val artists: List<Artist> = listOf()
 )
 
-fun AlbumEntity.toBaseDTO(): Album {
-	return Album(
-		id = id.value.toString(),
+fun AlbumEntity.toBaseDTO(): Album = transaction {
+	Album(
+		id = id,
 		name = name,
 		imageUrl = imageUrl ?: "",
-		artists = transaction { artists.map { it.toBaseDTO() } }
+		artists = artists.map { it.toBaseDTO() }
 	)
 }
 
@@ -33,15 +33,15 @@ data class FullAlbum(
 	val label: String? = null
 )
 
-fun AlbumEntity.toFullDTO() : FullAlbum {
-	return FullAlbum(
-		id = id.value.toString(),
+fun AlbumEntity.toFullDTO() : FullAlbum = transaction {
+	FullAlbum(
+		id = id,
 		name = name,
 		likes = likes,
-		listening = transaction { tracks.sumOf { it.listening } },
+		listening = tracks.sumOf { it.listening },
 		releaseDate = releaseDate,
 		imageUrl = imageUrl,
 		label = label,
-		artists = transaction { artists.map { it.toBaseDTO() } }
+		artists = artists.map { it.toBaseDTO() }
 	)
 }

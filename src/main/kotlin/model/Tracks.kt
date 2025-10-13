@@ -22,7 +22,6 @@ object TracksTable : UUIDTable("TRACKS_TABLE") {
 	val albumId = reference("albumId", AlbumsTable)
 	val name = text("name")
 	val durationSeconds  = integer("durationSeconds ").default(0)
-	val lyrics = text("lyrics").nullable()
 	val indexInAlbum = integer("index_in_album").default(0)
 	val listening = integer("listening").default(0)
 	val isExplicit = bool("isExplicit").default(false)
@@ -42,6 +41,22 @@ object TracksToGenreTable : UUIDTable("TRACKS_TO_GENRE_TABLE") {
 	val genre = reference("genre", GenresTable)
 }
 
+object LyricsTable : UUIDTable("LYRICS_TABLE") {
+	val plainText = text("plain_text")
+	val syncedText = text("synced_text")
+
+	val track = reference("track", TracksTable).uniqueIndex()
+}
+
+class LyricsEntity(id: EntityID<UUID>) : UUIDEntity(id) {
+	companion object : UUIDEntityClass<LyricsEntity>(LyricsTable)
+
+	var plainText by LyricsTable.plainText
+	var syncedText by LyricsTable.syncedText
+
+	val track by TrackEntity referencedOn LyricsTable.track
+}
+
 class TrackGenreEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 	companion object : UUIDEntityClass<TrackGenreEntity>(GenresTable)
 
@@ -54,14 +69,13 @@ class TrackEntity(id: EntityID<UUID>) : UUIDEntity(id) {
 
 	var name by TracksTable.name
 	var durationSeconds by TracksTable.durationSeconds
-	var lyrics by TracksTable.lyrics
 	var indexInAlbum by TracksTable.indexInAlbum
 	var listening by TracksTable.listening
 	var isExplicit by TracksTable.isExplicit
 
+	val lyrics by LyricsEntity referrersOn LyricsTable.track
 	var album by AlbumEntity referencedOn TracksTable.albumId
 	var artists by ArtistEntity via ArtistsOnTrackTable
 
 	var genres by TrackGenreEntity via TracksToGenreTable
 }
-
