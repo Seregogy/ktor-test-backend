@@ -17,4 +17,4 @@ EXPOSE 8080
 
 CMD ["java", "-jar", "app.jar"]
 
-#sudo docker run -d -p 8080:8080 -v /home/seregogy/audio:/app/src/files/audio/ -v /home/seregogy/docs/documentation.yaml:/app/src/docs/documentation.yaml -v /home/seregogy/database2.db:/app/src/files/database.db --name music-server reptiloidd/ktor-server:latest
+#sudo docker run -d -p 8080:8080 -v /home/seregogy/audio:/app/src/files/audio/ -v /home/seregogy/docs/documentation.yaml:/app/src/docs/documentation.yaml -v /home/seregogy/database.db:/app/src/files/database.db --name music-server reptiloidd/ktor-server:latest
