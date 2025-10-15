@@ -46,19 +46,13 @@ fun TrackEntity.toBaseDTOWithArtists(audioUrl: String) : TrackWithArtists = tran
 }
 
 @Serializable
-data class Lyrics(
-	val plainText: String,
-	val syncedText: String
-)
-
-@Serializable
 data class FullTrack(
 	val id: String = "",
 	val name: String = "",
 	val imageUrl: String? = "",
 	val indexInAlbum: Int = 0,
 	val durationSeconds: Int = 0,
-	val lyrics: Lyrics? = null,
+	val hasLyrics: Boolean = false,
 	val listening: Int? = 0,
 	val isExplicit: Boolean? = false,
 	val audioUrl: String = "",
@@ -72,17 +66,10 @@ fun TrackEntity.toFullDTO(audioUrl: String) : FullTrack = transaction {
 		imageUrl = album.imageUrl,
 		indexInAlbum = indexInAlbum,
 		durationSeconds = durationSeconds,
-		lyrics = lyrics.firstOrNull()?.toDTO(),
+		hasLyrics = lyrics.firstOrNull() != null,
 		listening = listening,
 		isExplicit = isExplicit,
 		audioUrl = audioUrl,
 		album = album.toBaseDTO()
-	)
-}
-
-fun LyricsEntity.toDTO(): Lyrics {
-	return Lyrics(
-		plainText ?: "",
-		syncedText ?: ""
 	)
 }
