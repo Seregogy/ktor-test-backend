@@ -28,9 +28,11 @@ import org.example.routes.auth.secret
 import org.example.routes.servingFilesRoutes
 import org.example.routes.tracks.tracksRoutes
 import org.example.routes.users.usersRoutes
+import org.h2.value.ValueUuid
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.UUID
 import kotlin.io.path.Path
 
 fun main() {
@@ -98,7 +100,7 @@ fun Application.configure() {
 
 	transaction {
 		SchemaUtils.createMissingTablesAndColumns(
-			ArtistsTable, AlbumsTable, TracksTable, GenresTable, UsersTable, PlaylistsTable
+			ArtistsTable, AlbumsTable, TracksTable, GenresTable, UsersTable, PlaylistsTable, LyricsTable
 		)
 
 		SchemaUtils.createMissingTablesAndColumns(

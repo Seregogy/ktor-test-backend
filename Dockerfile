@@ -12,11 +12,7 @@ ENV audience="onewave.duckdns.org/help" \
     baseUrl="https://onewave.duckdns.org/"
 
 WORKDIR /app
-
-RUN ./gradlew shadowjar
-
 COPY build/libs/*-all.jar app.jar
-
 EXPOSE 8080
 
 CMD ["java", "-jar", "app.jar"]
