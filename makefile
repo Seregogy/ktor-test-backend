@@ -4,9 +4,9 @@ build:
 	gradlew.bat shadowjar
 
 docker-build-image: build
-	docker build -t reptiloidd/ktor-server .
+	docker build -t reptiloidd/ktor-server:latest .
 
-docker-push: build docker-build-image
+docker-push: docker-build-image
 	docker push reptiloidd/ktor-server:latest
 
 run: docker-build-image

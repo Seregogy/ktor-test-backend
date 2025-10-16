@@ -43,7 +43,7 @@ fun Route.getTrack() {
 		call.cacheControl(10.minutes())
 		call.respond(
 			track.toFullDTO(call.request.origin.let {
-				"https://${externalHost}audio/${track.id}.mp3"
+				"https://$externalHost/audio/${track.id}.mp3"
 			})
 		)
 	}

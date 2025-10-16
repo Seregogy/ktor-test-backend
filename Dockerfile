@@ -1,15 +1,15 @@
 FROM openjdk:24
 
-ENV audience="onewave.duckdns.org/help" \
-    host="onewave.duckdns.org" \
-    localHost="0.0.0.0" \
-    port=8080 \
-    issuer="onewave.duckdns.org"\
-    realm="Full API access" \
-    secret="secret" \
-    JAVA_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED" \
-    dbPath="database2.db" \
-    baseUrl="https://onewave.duckdns.org/"
+# ENV audience="onewave.duckdns.org/help" \
+#     host="onewave.duckdns.org" \
+#     localHost="0.0.0.0" \
+#     port=8080 \
+#     issuer="onewave.duckdns.org"\
+#     realm="Full API access" \
+#     secret="secret" \
+#     JAVA_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED" \
+#     dbPath="database2.db" \
+#     baseUrl="https://onewave.duckdns.org/"
 
 WORKDIR /app
 COPY build/libs/*-all.jar app.jar
